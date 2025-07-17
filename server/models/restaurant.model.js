@@ -1,11 +1,10 @@
 import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js"; 
-
-const Restaurant = sequelize.define("Restaurant", {
+import sequelize from "./db.js";
+const Restaurant = sequelize.define("restaurant", {
   id: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
     autoIncrement: true,
+    primaryKey: true,
   },
   name: {
     type: DataTypes.STRING,
@@ -15,18 +14,18 @@ const Restaurant = sequelize.define("Restaurant", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  img: {
+  imageUrl: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
 });
 
-Restaurant.sync({ force: true }) 
+Restaurant.sync({ force: false })
   .then(() => {
-    console.log("Restaurant table created successfully.");
+    console.log("Table created or already exists 555");
   })
   .catch((error) => {
-    console.error("Error creating Restaurant table:", error);
+    console.log("Error creating table", error);
   });
-
+//module.exports =
 export default Restaurant;

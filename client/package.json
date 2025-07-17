@@ -1,5 +1,5 @@
 {
-  "name": "grab-restaurant",
+  "name": "grab_restaurant",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+    "grab_restaurant": "file:",
     "json-server": "^1.0.0-beta.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.2",
+    "react-router": "^7.6.2",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {

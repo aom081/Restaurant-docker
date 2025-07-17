@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
-const dbConfig = {
-  HOST: process.env.HOST || "localhost",
-  PORT: process.env.DBPORT || 5433,
-  USER: process.env.USER || "postgres",
-  PASSWORD: process.env.PASSWORD || "postgres",
-  DB: process.env.DB || "app_db",
-  dialect: process.env.DIALECT || "postgres",
+export default {
+  HOST: process.env.HOST,
+  USER: process.env.USER,
+  PASSWORD: process.env.PASSWORD,
+  DB: process.env.DB,
+  PORT: process.env.DBPORT,
+  dialect: process.env.DIALECT,
   pool: {
     max: 5,
     min: 0,
@@ -14,5 +14,3 @@ const dbConfig = {
     idle: 10000,
   },
 };
-
-export default dbConfig;

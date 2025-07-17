@@ -1,127 +1,139 @@
 import Restaurant from "../models/restaurant.model.js";
-const RestaurantController = {};
-RestaurantController.create = async (req, res) => {
-  const { name, type, img } = req.body;
+const restaurantController = {};
+//Create and save a new restaurant
+restaurantController.create = async (req, res) => {
+  const { name, type, imageUrl } = req.body;
 
-  if (!name || !type || !img) {
-    return res.status(400).json({ message: "Missing required fields" });
+  //validate data
+  if (!name || !type || !imageUrl) {
+    res
+      .status(400)
+      .send({ message: "Name, Type or ImageUrl can not be empty!" });
+    return;
   }
 
-  try {
-    const restaurant = await Restaurant.findOne({ where: { name } });
-
-    if (restaurant) {
-      return res.status(400).json({ message: "Restaurant already exists" });
+  await Restaurant.findOne({ where: { name: name } }).then((restuarant) => {
+    if (restuarant) {
+      res.status(400).send({ message: "Restaurant already exists!" });
+      return;
     }
+    const newRestaurant = {
+      name: name,
+      type: type,
+      imageUrl: imageUrl,
+    };
+    console.log(newRestaurant);
 
-    const newRestaurant = await Restaurant.create({ name, type, img });
+    Restaurant.create(newRestaurant)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((error) => {
+        console.log(error);
 
-    return res
-      .status(201)
-      .json({
-        message: "Restaurant created successfully",
-        data: newRestaurant,
+        res.status(500).send({
+          message:
+            error.message || "Something error while creating the restaurant",
+        });
       });
-  } catch (error) {
-    console.error("Error creating restaurant:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+  });
+};
+//Get All restaurant
+restaurantController.getAll = async (req, res) => {
+  await Restaurant.findAll()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message:
+          error.message || "Something error while getting all restaurants",
+      });
+    });
 };
 
-RestaurantController.getAll = async (req, res) => {
-  try {
-    const restaurants = await Restaurant.findAll();
-
-    if (restaurants.length === 0) {
-      return res.status(404).json({ message: "No restaurants found" });
-    }
-
-    return res.status(200).json({
-      message: "Restaurants retrieved successfully",
-      data: restaurants,
+//Get Restaurant By Id
+restaurantController.getById = async (req, res) => {
+  const id = req.params.id;
+  await Restaurant.findByPk(id)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({ message: "No found restaurant with id " + id });
+      } else {
+        res.send(data);
+      }
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message:
+          error.message ||
+          "Something error while getting restaurant with id" + id,
+      });
     });
-  } catch (error) {
-    console.error("Error retrieving restaurants:", error);
-    return res.status(500).json({ message: "Internal server error" });
+};
+
+//Update a restaurant
+restaurantController.update = async (req, res) => {
+  const id = req.params.id;
+  const { name, type, imageUrl } = req.body;
+  //validate data
+  if (!name && !type && !imageUrl) {
+    res
+      .status(400)
+      .send({ message: "Name, Type and ImageUrl can not be empty!" });
+    return;
   }
-}
+  await Restaurant.update(
+    { name: name, type: type, imageUrl: imageUrl },
+    {
+      where: { id: id },
+    }
+  )
+    .then((num) => {
+      if (num === 1) {
+        res.send({ message: "Restaurant update successfully!" });
+      } else {
+        res.status(404).send({
+          message:
+            "Cannot update restaurant with id " +
+            id +
+            ". Maybe restaurant was not found.",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message:
+          error.message ||
+          "Something error while updating restaurant with id" + id,
+      });
+    });
+};
 
-RestaurantController.getById = async (req, res) => {
-  const { id } = req.params;
-
+//Delete a restaurant by id
+restaurantController.deleteById = async (req, res) => {
+  const id = req.params.id;
   if (!id) {
-    return res.status(400).json({ message: "Restaurant ID is required" });
+    res.status(404).send({ message: "Id is missing" });
+    return;
   }
-
-  try {
-    const restaurant = await Restaurant.findByPk(id);
-
-    if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    }
-
-    return res.status(200).json({
-      message: "Restaurant retrieved successfully",
-      data: restaurant,
+  await Restaurant.destroy({ where: { id } })
+    .then((num) => {
+      if (num === 1) {
+        res.send({ message: "Restaurant was deleted successfully" });
+      } else {
+        res.status(404).send({
+          message: "Cannot delete restaurant with id " + id + ".",
+        });
+      }
+    })
+    .catch((error) => {
+      res.status(500).send({
+        message:
+          error.message ||
+          "Something error while updating restaurant with id" + id,
+      });
     });
-  } catch (error) {
-    console.error("Error retrieving restaurant:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
+};
 
-RestaurantController.update = async (req, res) => {
-  const { id } = req.params;
-  const { name, type, img } = req.body;
-  if (!id && !name && !type && !img) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-  try {
-    const restaurant = await Restaurant.findByPk(id);
-
-    if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    }
-
-    restaurant.name = name;
-    restaurant.type = type;
-    restaurant.img = img;
-
-    await restaurant.save();
-
-    return res.status(200).json({
-      message: "Restaurant updated successfully",
-      data: restaurant,
-    });
-  } catch (error) {
-    console.error("Error updating restaurant:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
-
-RestaurantController.delete = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ message: "Restaurant ID is required" });
-  }
-
-  try {
-    const restaurant = await Restaurant.findByPk(id);
-
-    if (!restaurant) {
-      return res.status(404).json({ message: "Restaurant not found" });
-    }
-
-    await restaurant.destroy();
-
-    return res.status(200).json({
-      message: "Restaurant deleted successfully",
-      data: restaurant,
-    });
-  } catch (error) {
-    console.error("Error deleting restaurant:", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-}
-export default RestaurantController;
+export default restaurantController;

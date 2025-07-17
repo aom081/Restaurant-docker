@@ -1,19 +1,21 @@
-import RestaurantController from "../controllers/restaurant.controller.js";
+import restaurantController from "../controllers/restaurant.controller.js";
+
 import express from "express";
-
 const router = express.Router();
-// POST http//:5000/api/v1/restaurants
-router.post("/", RestaurantController.create);
 
-// GET http//:5000/api/v1/restaurants
-router.get("/", RestaurantController.getAll);
+//POST http://localhost:5000/api/v1/restaurants
+router.post("/", restaurantController.create);
 
-// GET http//:5000/api/v1/restaurants/:id
-router.get("/:id", RestaurantController.getById);
+//GET http://localhost:5000/api/v1/restaurants
+router.get("/", restaurantController.getAll);
 
-// PUT http//:5000/api/v1/restaurants/:id
-router.put("/:id", RestaurantController.update);
+//GET http://localhost:5000/api/v1/restaurants/:id
+router.get("/:id", restaurantController.getById);
 
-// DELETE http//:5000/api/v1/restaurants/:id
-router.delete("/:id", RestaurantController.delete);
+//PUT http://localhost:5000/api/v1/restaurants/:id
+router.put("/:id", restaurantController.update);
+
+//DELETE http://localhost:5000/api/v1/restaurants/:id
+router.delete("/:id", restaurantController.deleteById);
+
 export default router;

@@ -1,13 +1,23 @@
 import React from "react";
-import AddRestaurant from "../Pages/AddRestaurant";
 
-const Navbar = () => {
-  const menuitems = [
-    { name: "Add restaurant", url: "/Add" },
-    { name: "Search", url: "/" },
+const NavBar = () => {
+  const menuItems = [
+    {
+      name: "Search",
+      url: "/",
+    },
+    {
+      name: "Add restaurant",
+      url: "/add",
+    },
+    {
+      name: "About Us",
+      url: "/",
+    },
   ];
+
   return (
-    <div className="navbar bg-base-10 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -31,20 +41,20 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
-            {menuitems.map((item) => {
-              return (
-                <li key={item.name}>
-                  <a href={item.url}>{item.name}</a>
-                </li>
-              );
-            })}
+            {menuItems.map((item) => (
+              <li key={item.name}>
+                <a href={item.url}>{item.name}</a>
+              </li>
+            ))}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl" href="/">Grad Restaurant</a>
+        <a className="btn btn-ghost text-xl" href="/">
+          Grab Restaurant
+        </a>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-          {menuitems.map((item) => {
+          {menuItems.map((item) => {
             return (
               <li key={item.name}>
                 <a href={item.url}>{item.name}</a>
@@ -54,11 +64,11 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end space-x-2">
-        <button className="btn btn-primary">Register</button>
+        <button className="btn btn-soft btn-primary">Register</button>
         <button className="btn btn-soft btn-success">Login</button>
       </div>
     </div>
   );
 };
 
-export default Navbar;
+export default NavBar;

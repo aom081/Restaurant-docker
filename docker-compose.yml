@@ -8,25 +8,24 @@ services:
     volumes:
       - "./server:/app"
       - "/app/node_modules"
-    command: npm run dev
-    restart: always
+    command: nodemon --legacy-watch index.js
+    restart: always # or 'on-failure' or 'unless-stopped'
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app-db
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/app_db
       - HOST=db
       - USER=postgres
       - PASSWORD=postgres
-      - DB=app-db
+      - DB=app_db
       - DB_PORT=5432
       - SERVER_PORT=5000
     depends_on:
       - db
-
   client:
     build:
       context: ./client
       dockerfile: Dockerfile.client
     ports:
-      - "5174:5174"
+      - "5173:5173"
     volumes:
       - "./client:/app"
       - "/app/node_modules"
@@ -34,7 +33,6 @@ services:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - server
-
   db:
     image: postgres:16
     restart: always
@@ -43,9 +41,8 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=app-db
+      - POSTGRES_DB=app_db
     volumes:
-      - PGdata:/var/lib/postgresql/data
-
+      - pgdata:/var/lib/postgresql/data
 volumes:
-  PGdata:  
+  pgdata:

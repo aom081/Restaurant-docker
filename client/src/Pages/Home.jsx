@@ -1,55 +1,62 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../Components/Navbar";
-import Restaurant from "../Components/Restaurant";
-import Footer from "../Components/Footer";
-import AddRestaurant from "./AddRestaurant";
-
+import NavBar from "../components/NavBar";
+import Restaurants from "../components/Restaurants";
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filtered, setFiltered] = useState([]);
+  const [filetedRestaurants, setFilteredRestaurants] = useState([]);
 
+  const handleSearch = (keyword) => {
+    if (keyword === "") {
+      setFilteredRestaurants(restaurants);
+      return;
+    }
+    const result = restaurants.filter((restaurant) => {
+      return (
+        restaurant.title.toLowerCase().includes(keyword.toLowerCase()) ||
+        restaurant.type.toLowerCase().includes(keyword.toLowerCase())
+      );
+    });
+    setFilteredRestaurants(result);
+    // console.log(result);
+  };
   useEffect(() => {
-    //call API: get All Restaurants
-    fetch("http://localhost:3000/restaurants")
-      .then((res) => res.json())
-      .then((response) => {
-        setRestaurants(response);
-        setFiltered(response);
+    //call api: getAllRestaurants
+    fetch("http://localhost:5000/restaurants")
+      .then((res) => {
+        // convert to JSON format
+        return res.json();
       })
-      .catch((error) => {
-        console.error("Error fetching restaurants:", error);
+      .then((response) => {
+        //save to state
+        setRestaurants(response);
+        setFilteredRestaurants(response);
+      })
+      .catch((err) => {
+        //catch error
+        console.log(err.message);
       });
   }, []);
-
-  useEffect(() => {
-    if (!search) {
-      setFiltered(restaurants);
-    } else {
-      setFiltered(
-        restaurants.filter((r) =>
-          (r.title || "")
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        )
-      );
-    }
-  }, [search, restaurants]);
-
   return (
-    <div className="mx-auto">
+    <div className="container mx-auto">
+      {
+        //Navigation Bar
+      }
+
+      {
+        //Header
+      }
       <div>
-        {/* Header Section */}
         <h1 className="title justify-center text-3xl text-center m-5 p-5">
-          Grad Restaurant
+          Grab Restaurant 5555
         </h1>
       </div>
-
-      {/* search Section */}
-      <div className="mb-5 flex justify-center items-center gap-2 ">
-        <label className="input">
+      {
+        //Search Box
+      }
+      <div className="mb-5 flex justify-center items-center ">
+        <label className="input flex items-center gap-2 w-2xl">
           <svg
-            className="h-[1em] opacity-500"
+            className="h-[1em] opacity-50"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -66,18 +73,18 @@ const Home = () => {
           </svg>
           <input
             type="search"
-            className="grow"
+            name="keyword"
+            onChange={(e) => handleSearch(e.target.value)}
+            required
             placeholder="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
           />
         </label>
       </div>
 
-      {/* Card Section */}
-      <div>
-        <Restaurant restaurants={filtered} />
-      </div>
+      {
+        // Result
+      }
+      <Restaurants restaurants={filetedRestaurants} />
     </div>
   );
 };
