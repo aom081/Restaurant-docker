@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../Components/Navbar";
 
 const Add = () => {
   const [restaurant, setRestaurant] = useState({
@@ -13,9 +13,12 @@ const Add = () => {
   };
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:5000/restaurants", {
+      const response = await fetch("http://localhost:5000/api/v1/restaurants", {
         method: "POST",
         body: JSON.stringify(restaurant),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       if (response.ok) {
         alert("Restaurant added successfully!!");
@@ -31,7 +34,6 @@ const Add = () => {
   };
   return (
     <div className="container mx-auto">
-      
       <div>
         <h1 className="text-2xl text-center mt-2">Add new restaurant</h1>
       </div>

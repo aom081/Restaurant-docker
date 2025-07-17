@@ -12,7 +12,7 @@ const Update = () => {
 
   //2. Get Restaurant by ID
   useEffect(() => {
-    fetch("http://localhost:5000/restaurants/" + id)
+    fetch("http://localhost:5000/api/v1/restaurants/" + id)
       .then((res) => {
         // convert to JSON format
         return res.json();
@@ -33,10 +33,16 @@ const Update = () => {
   };
   const handleSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:5000/restaurants/" + id, {
-        method: "PUT",
-        body: JSON.stringify(restaurant),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/v1/restaurants/" + id,
+        {
+          method: "PUT",
+          body: JSON.stringify(restaurant),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.ok) {
         alert("Restaurant updated successfully!!");
         setRestaurant({
