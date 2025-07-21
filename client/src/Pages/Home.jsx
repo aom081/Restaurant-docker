@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../Components/Navbar";
+import NavBar from "../components/NavBar";
 import Restaurants from "../components/Restaurants";
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
-  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [filetedRestaurants, setFilteredRestaurants] = useState([]);
 
   const handleSearch = (keyword) => {
     if (keyword === "") {
@@ -12,7 +12,7 @@ const Home = () => {
     }
     const result = restaurants.filter((restaurant) => {
       return (
-        restaurant.name.toLowerCase().includes(keyword.toLowerCase()) ||
+        restaurant.title.toLowerCase().includes(keyword.toLowerCase()) ||
         restaurant.type.toLowerCase().includes(keyword.toLowerCase())
       );
     });
@@ -47,7 +47,7 @@ const Home = () => {
       }
       <div>
         <h1 className="title justify-center text-3xl text-center m-5 p-5">
-          Grab Restaurant 5555
+          Grab Restaurant
         </h1>
       </div>
       {
@@ -84,7 +84,7 @@ const Home = () => {
       {
         // Result
       }
-      <Restaurants restaurants={filteredRestaurants} />
+      <Restaurants restaurants={filetedRestaurants} />
     </div>
   );
 };

@@ -90,7 +90,7 @@ restaurantController.update = async (req, res) => {
     }
   )
     .then((num) => {
-      if (num === 1) {
+      if (num[0] === 1) {
         res.send({ message: "Restaurant update successfully!" });
       } else {
         res.status(404).send({

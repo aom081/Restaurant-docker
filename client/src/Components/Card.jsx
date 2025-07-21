@@ -20,11 +20,11 @@ const Card = (props) => {
   return (
     <div className="card bg-base-100 w-96 shadow-sm">
       <figure>
-        <img src={props.img} alt="Shoes" />
+        <img src={props.imageUrl} alt="Shoes" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">
-          {props.title}
+          {props.name}
           <div className="badge badge-secondary">NEW</div>
         </h2>
         <p>{props.type}</p>

@@ -5,7 +5,6 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 import restaurantRouter from "./routers/restaurant.router.js";
 import cors from "cors";
-
 app.use(
   cors({
     origin: ["http://localhost:5173", "127.0.0.1:5173"],
@@ -18,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Restaurant Restful API");
+  res.send("Restaurant Restful API Completed");
 });
 
 //use routers
