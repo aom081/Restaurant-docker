@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
-import Add from "../pages/Add";
-import Home from "../pages/Home";
-import Update from "../pages/Update";
+import Add from "../Pages/Add";
+import Home from "../Pages/Home";
+import Update from "../Pages/Update";
 const router = createBrowserRouter([
   {
     path: "/",
