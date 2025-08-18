@@ -10,7 +10,7 @@ app.use(
   cors({
     origin: ["http://localhost:5173", "127.0.0.1:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
   })
 );
 

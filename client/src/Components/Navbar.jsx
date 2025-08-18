@@ -1,6 +1,10 @@
 import React from "react";
-
+import { useAuthContext } from "../context/AuthContext";
+import UserProfile from "./UserProfile";
 const NavBar = () => {
+  const { user } = useAuthContext();
+  console.log(user);
+
   const menuItems = [
     {
       name: "Search",
@@ -64,8 +68,21 @@ const NavBar = () => {
         </ul>
       </div>
       <div className="navbar-end space-x-2">
-        <button className="btn btn-soft btn-primary">Register</button>
-        <button className="btn btn-soft btn-success">Login</button>
+        {user ? (
+          <div>
+            <UserProfile />
+          </div>
+        ) : (
+          <div className="space-x-2">
+            {" "}
+            <a href="/register" className="btn btn-soft btn-primary">
+              Register
+            </a>
+            <a href="/login" className="btn btn-soft btn-success">
+              Login
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
-  "author": "Nattawat",
+  "author": "Worachet Uttha",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
