@@ -1,6 +1,23 @@
 import { useState } from "react";
 import AuthService from "../services/auth.service";
-import { useNavigate } from "react-router";
+// Frontend: Register.jsx
+const handleSubmit = async () => {
+  const newUser = await AuthService.register(
+    user.username, user.name, user.email, user.password
+  );
+  if (newUser.status === 200) {
+    navigate("/login");
+  }
+};
+
+// Backend: auth.controller.js
+const newUser = {
+  username, name, email,
+  password: bcrypt.hashSync(password, 8)
+};
+User.create(newUser).then((user) => {
+  user.setRoles([1]); // Default user role
+});import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
 const Register = () => {
