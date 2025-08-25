@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../components/NavBar";
 import Restaurants from "../components/Restaurants";
+import RestaurantService from "../services/restaurtant.service";
+import Swal from "sweetalert2";
 const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [filetedRestaurants, setFilteredRestaurants] = useState([]);
@@ -21,20 +23,25 @@ const Home = () => {
   };
   useEffect(() => {
     //call api: getAllRestaurants
-    fetch("http://localhost:5000/api/v1/restaurants")
-      .then((res) => {
-        // convert to JSON format
-        return res.json();
-      })
-      .then((response) => {
-        //save to state
-        setRestaurants(response);
-        setFilteredRestaurants(response);
-      })
-      .catch((err) => {
-        //catch error
-        console.log(err.message);
-      });
+
+    const getAllRestaurant = async () => {
+      try {
+        const response = await RestaurantService.getAllRestaurants();
+        // console.log(response);
+
+        if (response.status === 200) {
+          setRestaurants(response.data);
+          setFilteredRestaurants(response.data);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Get All Restaurants",
+          icon: "error",
+          text: error?.response?.data?.message || error.message,
+        });
+      }
+    };
+    getAllRestaurant();
   }, []);
   return (
     <div className="container mx-auto">

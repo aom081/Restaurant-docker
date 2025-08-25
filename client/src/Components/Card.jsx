@@ -1,6 +1,8 @@
-import React from "react";
+import React, { use } from "react";
+import { useAuthContext } from "../context/AuthContext";
 
 const Card = (props) => {
+  const { user } = useAuthContext();
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
@@ -28,17 +30,26 @@ const Card = (props) => {
           <div className="badge badge-secondary">NEW</div>
         </h2>
         <p>{props.type}</p>
-        <div className="card-actions justify-end">
-          <button
-            onClick={() => handleDelete(props.id)}
-            className="btn btn-error"
-          >
-            Delete
-          </button>
-          <a href={"/update/" + props.id} className="btn btn-warning">
-            Edit
-          </a>
-        </div>
+        {user && user?.authorities?.includes("ROLES_ADMIN") && (
+          <div className="card-actions justify-end">
+            <button
+              onClick={() => handleDelete(props.id)}
+              className="btn btn-error"
+            >
+              Delete
+            </button>
+            <a href={"/update/" + props.id} className="btn btn-warning">
+              Edit
+            </a>
+          </div>
+        )}
+        {user && user?.authorities?.includes("ROLES_MODERATOR") && (
+          <div className="card-actions justify-end">
+            <a href={"/update/" + props.id} className="btn btn-warning">
+              Edit
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
