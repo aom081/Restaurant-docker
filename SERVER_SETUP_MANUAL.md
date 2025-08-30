@@ -6,10 +6,11 @@
 3. [Initial Setup](#initial-setup)
 4. [Database Configuration](#database-configuration)
 5. [Server Configuration](#server-configuration)
-6. [Running the Application](#running-the-application)
-7. [API Endpoints](#api-endpoints)
-8. [Troubleshooting](#troubleshooting)
-9. [Development Workflow](#development-workflow)
+6. [JWT Authentication System](#jwt-authentication-system)
+7. [Running the Application](#running-the-application)
+8. [API Endpoints](#api-endpoints)
+9. [Troubleshooting](#troubleshooting)
+10. [Development Workflow](#development-workflow)
 
 ## 🔧 Prerequisites
 
@@ -188,7 +189,271 @@ const Restaurant = sequelize.define("restaurant", {
 });
 ```
 
-## 🔄 Running the Application
+## � JWT Authentication System
+
+This application implements a comprehensive JWT (JSON Web Token) authentication system with secure user registration and login functionality.
+
+### Authentication Architecture
+
+#### Backend Components:
+- **JWT Tokens**: Signed with secret key, 24-hour expiration
+- **Password Security**: bcrypt hashing with salt rounds (8)
+- **Role-Based Access**: User, Moderator, Admin roles
+- **Database Models**: User-Role many-to-many relationship
+
+#### Frontend Components:
+- **React Context**: Global authentication state management
+- **Token Storage**: localStorage with automatic retrieval
+- **HTTP Interceptor**: Auto-attaches tokens to API requests
+- **Protected Routes**: Route-level access control
+
+### Authentication Endpoints
+
+#### User Registration
+```http
+POST /api/v1/auth/signup
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "securePassword123"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "message": "User registered successfully"
+}
+```
+
+#### User Login
+```http
+POST /api/v1/auth/signin
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "securePassword123"
+}
+```
+
+**Response (Success):**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "authorities": ["ROLES_USER"],
+  "userInfo": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "username": "johndoe"
+  }
+}
+```
+
+### How to Use Authentication
+
+#### 1. User Registration Process
+1. **Navigate to Registration**:
+   ```
+   http://localhost:5173/register
+   ```
+
+2. **Fill Registration Form**:
+   - Username (unique identifier)
+   - Full Name
+   - Email Address
+   - Password
+
+3. **Submit Form**:
+   - Click "Register" button
+   - System validates input and creates user
+   - Automatic redirect to login page on success
+
+#### 2. User Login Process
+1. **Navigate to Login**:
+   ```
+   http://localhost:5173/login
+   ```
+
+2. **Enter Credentials**:
+   - Username
+   - Password
+
+3. **Authentication Flow**:
+   - Click "Login" button
+   - System verifies credentials
+   - JWT token generated and stored
+   - Redirect to home page
+   - NavBar shows user avatar with logout option
+
+#### 3. Protected Resource Access
+Once logged in, users can:
+- View and manage restaurants
+- Access user profile
+- Perform role-based actions
+- API requests automatically include JWT token
+
+#### 4. Logout Process
+1. **Click User Avatar** in NavBar
+2. **Select "Logout"** from dropdown
+3. **Token Cleared** from localStorage
+4. **Redirect** to login page
+
+### Security Features
+
+#### Password Security:
+- **Hashing**: bcrypt with salt rounds (8)
+- **Validation**: Server-side input validation
+- **No Plain Text**: Passwords never stored in plain text
+
+#### JWT Token Security:
+- **Signed Tokens**: Cryptographically signed with secret
+- **Expiration**: 24-hour automatic expiration
+- **Header Transmission**: Sent as `x-access-token` header
+- **Stateless**: No server-side session storage
+
+#### Role-Based Access Control:
+- **Default Role**: New users assigned "user" role
+- **Role Hierarchy**: User → Moderator → Admin
+- **Authority Format**: "ROLES_USER", "ROLES_ADMIN", etc.
+- **Extensible**: Easy to add new roles and permissions
+
+### Environment Configuration
+
+#### Server Environment Variables (.env):
+```bash
+# JWT Configuration
+JWT_SECRET=your-super-secure-secret-key-here
+
+# Database Configuration  
+DB_HOST=db
+DB_USER=postgres
+DB_PASSWORD=password
+DB_NAME=restaurant_db
+```
+
+#### Client Environment Variables (.env):
+```bash
+# API Configuration
+VITE_BASE_URL="http://localhost:5000/api/v1"
+VITE_AUTH_API="/auth"
+VITE_RESTO_API="/restaurants"
+```
+
+### Authentication State Management
+
+#### React Context Structure:
+```javascript
+// AuthContext provides:
+{
+  user: {
+    name: "John Doe",
+    email: "john@example.com", 
+    username: "johndoe",
+    token: "eyJhbGciOiJIUzI1NiIs...",
+    authorities: ["ROLES_USER"]
+  },
+  login: (userData) => void,
+  logout: () => void,
+  isAuthenticated: boolean
+}
+```
+
+#### Component Usage:
+```jsx
+import { useAuthContext } from '../context/AuthContext';
+
+const MyComponent = () => {
+  const { user, logout } = useAuthContext();
+  
+  return (
+    <div>
+      {user ? (
+        <p>Welcome, {user.name}!</p>
+      ) : (
+        <p>Please log in</p>
+      )}
+    </div>
+  );
+};
+```
+
+### Authentication Flow Diagram
+
+```
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Register  │───▶│   Database   │───▶│   Login     │
+│   /register │    │   User       │    │   /login    │
+└─────────────┘    │   Created    │    └─────────────┘
+                   └──────────────┘           │
+                                              ▼
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│   Home      │◀───│   JWT Token  │◀───│   Auth      │
+│   /         │    │   Generated  │    │   Success   │
+└─────────────┘    └──────────────┘    └─────────────┘
+```
+
+### Common Authentication Errors
+
+#### Registration Issues:
+- **Username Exists**: "Username is already existed"
+- **Missing Fields**: "Please provide all required fields"
+- **Solution**: Use unique username and fill all fields
+
+#### Login Issues:
+- **User Not Found**: "User not found!"
+- **Invalid Password**: "Invalid password"
+- **Solution**: Verify credentials or register new account
+
+#### Token Issues:
+- **Expired Token**: Automatic redirect to login
+- **Invalid Token**: Server returns 401 Unauthorized
+- **Solution**: Re-login to refresh token
+
+### Testing Authentication
+
+#### Manual Testing:
+1. **Start Application**:
+   ```bash
+   docker-compose up --build
+   ```
+
+2. **Test Registration**:
+   - Visit: http://localhost:5173/register
+   - Create test user
+   - Verify redirect to login
+
+3. **Test Login**:
+   - Use registered credentials
+   - Verify token in localStorage
+   - Check NavBar user avatar
+
+4. **Test Protected Routes**:
+   - Navigate through application
+   - Verify API calls include token
+   - Test logout functionality
+
+#### API Testing with curl:
+```bash
+# Register User
+curl -X POST http://localhost:5000/api/v1/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","name":"Test User","email":"test@example.com","password":"password123"}'
+
+# Login User  
+curl -X POST http://localhost:5000/api/v1/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","password":"password123"}'
+
+# Access Protected Route (with token)
+curl -X GET http://localhost:5000/api/v1/restaurants \
+  -H "x-access-token: YOUR_JWT_TOKEN_HERE"
+```
+
+## �🔄 Running the Application
 
 ### Step 1: Build and Start Services
 ```bash
@@ -381,13 +646,38 @@ docker-compose up --build server
 
 ## 🔐 Security Notes
 
-For production deployment:
+### Authentication Security (Implemented)
+This application now includes a complete JWT authentication system with:
+- ✅ **User Registration & Login**: Secure signup/signin flow
+- ✅ **Password Hashing**: bcrypt with salt rounds (8)
+- ✅ **JWT Tokens**: Cryptographically signed, 24-hour expiration
+- ✅ **Role-Based Access**: User, Moderator, Admin roles
+- ✅ **Token Management**: Automatic header injection via interceptors
+- ✅ **Protected Routes**: Frontend route protection
+- ✅ **Session Management**: localStorage with context state
+
+### Additional Production Recommendations
+For enhanced production security:
 - Change default database credentials
-- Use environment variables for secrets
-- Enable HTTPS
-- Implement authentication/authorization
+- Use strong JWT secrets (32+ characters)
+- Enable HTTPS with SSL certificates
+- Implement rate limiting for auth endpoints
+- Add email verification for registration
 - Set up proper CORS policies
 - Use Docker secrets for sensitive data
+- Enable API request logging
+- Implement token refresh mechanism
+- Add password complexity requirements
+
+### Environment Security Checklist
+- [ ] JWT_SECRET is cryptographically secure
+- [ ] Database passwords are unique and complex
+- [ ] API endpoints have proper validation
+- [ ] CORS is configured for production domains
+- [ ] HTTPS is enabled in production
+- [ ] Sensitive data uses environment variables
+- [ ] Docker images are regularly updated
+- [ ] Security headers are implemented
 
 ---
 
