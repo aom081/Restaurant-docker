@@ -8,7 +8,7 @@ import authRouter from "./routers/auth.router.js";
 import cors from "cors";
 app.use(
   cors({
-    origin: ["http://localhost:5173", "127.0.0.1:5173"],
+    origin: ["http://localhost:5173", "127.0.0.1:5173", process.env.FRONTEND_URL],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
   })
