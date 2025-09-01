@@ -14,7 +14,6 @@ const Update = () => {
 
   //2. Get Restaurant by ID
   useEffect(() => {
-
     const fetchRestaurant = async () => {
       try {
         const response = await RestaurantService.getRestaurantById(id);
@@ -38,20 +37,11 @@ const Update = () => {
     fetchRestaurant();
   }, [id]);
 
-      .then((response) => {
-        //save to state
-        setRestaurant(response);
-      })
-      .catch((err) => {
-        //catch error
-        console.log(err.message);
-      });
-  }, [id]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRestaurant({ ...restaurant, [name]: value });
   };
+
   const handleSubmit = async () => {
     try {
       const response = await fetch(
@@ -65,12 +55,28 @@ const Update = () => {
         }
       );
       if (response.ok) {
-        alert("Restaurant updated successfully!!");
+        Swal.fire({
+          title: "Success!",
+          text: "Restaurant updated successfully!",
+          icon: "success",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Update failed!",
+          icon: "error",
+        });
       }
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+      });
     }
   };
+
   return (
     <div className="container mx-auto">
       <div>
@@ -112,7 +118,7 @@ const Update = () => {
         </label>
         {restaurant.imageUrl && (
           <div className="flex items-center gap-2">
-            <img className="h-32" src={restaurant.imageUrl} />
+            <img className="h-32" src={restaurant.imageUrl} alt="Restaurant" />
           </div>
         )}
         <div className="space-x-2">
