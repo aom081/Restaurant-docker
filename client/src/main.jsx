@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import router from "./Routes/router.jsx";
-import { RouterProvider } from "react-router-dom"; 
+import { RouterProvider } from "react-router"; 
 import NavBar from "./components/NavBar";
 import { AuthProvider } from "./context/AuthContext";
 
