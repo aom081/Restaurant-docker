@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
-import Add from "../Pages/Add";
-import Home from "../Pages/Home";
-import Update from "../Pages/Update";
-import Login from "../Pages/Login";
-import Register from "../Pages/Register";
-import AdminPage from "../Components/AdminPage";
-import Layout from "../Components/Layout";
+import Add from "../Pages/Add.jsx";
+import Home from "../Pages/Home.jsx";
+import Update from "../Pages/Update.jsx";
+import Login from "../Pages/Login.jsx";
+import Register from "../Pages/Register.jsx";
+import AdminPage from "../Components/AdminPage.jsx";
+import Layout from "../Components/Layout.jsx";
 
 const router = createBrowserRouter([
   {
