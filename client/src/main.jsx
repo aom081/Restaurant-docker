@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import router from "./Routes/router.jsx";
 import { RouterProvider } from "react-router"; 
-import NavBar from "./Components/NavBar.jsx";
+import NavBar from "./Components/Navbar.jsx";
 import { AuthProvider } from "./context/AuthContext";
 
 createRoot(document.getElementById("root")).render(
