@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "../Components/Navbar";
-import Restaurants from "../Components/Restaurants";
+import NavBar from "../components/NavBar";
+import Restaurants from "../components/Restaurants";
 import RestaurantService from "../services/restaurtant.service";
 import Swal from "sweetalert2";
 const Home = () => {

@@ -1,43 +1,54 @@
 import { createBrowserRouter } from "react-router";
-import Add from "../Pages/Add.jsx";
-import Home from "../Pages/Home.jsx";
-import Update from "../Pages/Update.jsx";
-import Login from "../Pages/Login.jsx";
-import Register from "../Pages/Register.jsx";
-import AdminPage from "../Components/AdminPage.jsx";
-import Layout from "../Components/Layout.jsx";
-
+import Add from "../pages/Add";
+import Home from "../pages/Home";
+import Update from "../pages/Update";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import NotAllowed from "../pages/NotAllowed";
+import AdminPage from "../pages/AdminPage";
+import UserPage from "../pages/UserPage";
+import ModOrAdminPage from "../pages/ModOrAdminPage";
+import Profile from "../pages/Profile";
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/add",
     element: (
-      <Layout>
-        <AdminPage />
-      </Layout>
+      <AdminPage>
+        <Add />
+      </AdminPage>
     ),
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "add",
-        element: <Add />,
-      },
-      {
-        path: "update/:id",
-        element: <Update />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/profile",
+    element: (
+      <UserPage>
+        <Profile />
+      </UserPage>
+    ),
+  },
+  {
+    path: "/update/:id",
+    element: (
+      <ModOrAdminPage>
+        <Update />
+      </ModOrAdminPage>
+    ),
+  },
+  {
+    path: "/notallowed",
+    element: <NotAllowed />,
   },
 ]);
-
 export default router;

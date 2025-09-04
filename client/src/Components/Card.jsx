@@ -1,22 +1,33 @@
 import React, { use } from "react";
 import { useAuthContext } from "../context/AuthContext";
-
+import RestaurantService from "../services/restaurtant.service.js";
+import Swal from "sweetalert2";
 const Card = (props) => {
   const { user } = useAuthContext();
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/restaurants/" + id,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        alert("Restaurant deleted successfully!!");
-        window.location.reload();
+      // const response = await fetch(
+      //   "http://localhost:5000/api/v1/restaurants/" + id,
+      //   {
+      //     method: "DELETE",
+      //   }
+      // );
+      const response = await RestaurantService.deleteRestaurant(id);
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Delete restaurant",
+          text: "Restaurant updated successfully!",
+          icon: "success",
+        }).then(() => {
+          window.location.reload();
+        });
       }
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "Delete restaurant",
+        text: error?.response?.data?.message || error.message,
+        icon: "error",
+      });
     }
   };
   return (

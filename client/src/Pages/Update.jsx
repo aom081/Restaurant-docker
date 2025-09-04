@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import RestaurantService from "../services/restaurtant.service";
+import RestaurantService from "../services/restaurtant.service.js";
 import Swal from "sweetalert2";
-
 const Update = () => {
   //1.Get Id from URL
   const { id } = useParams();
@@ -19,21 +18,16 @@ const Update = () => {
         const response = await RestaurantService.getRestaurantById(id);
         if (response.status === 200) {
           setRestaurant(response.data);
-          Swal.fire({
-            title: "Success!",
-            text: "Restaurant fetched successfully!",
-            icon: "success",
-          });
         }
       } catch (error) {
-        console.log(error.message);
         Swal.fire({
-          title: "Error!",
+          title: "Fetch restaurant",
           text: error?.response?.data?.message || error.message,
           icon: "error",
         });
       }
     };
+
     fetchRestaurant();
   }, [id]);
 
@@ -41,42 +35,38 @@ const Update = () => {
     const { name, value } = e.target;
     setRestaurant({ ...restaurant, [name]: value });
   };
-
   const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/restaurants/" + id,
-        {
-          method: "PUT",
-          body: JSON.stringify(restaurant),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      // const response = await fetch(
+      //   "http://localhost:5000/api/v1/restaurants/" + id,
+      //   {
+      //     method: "PUT",
+      //     body: JSON.stringify(restaurant),
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+      const response = await RestaurantService.editRestaurantById(
+        id,
+        restaurant
       );
-      if (response.ok) {
+
+      if (response.status === 200) {
         Swal.fire({
-          title: "Success!",
+          title: "Update restaurant",
           text: "Restaurant updated successfully!",
           icon: "success",
         });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: "Update failed!",
-          icon: "error",
-        });
       }
     } catch (error) {
-      console.log(error);
       Swal.fire({
-        title: "Error!",
-        text: error.message,
+        title: "Update restaurant",
+        text: error?.response?.data?.message || error.message,
         icon: "error",
       });
     }
   };
-
   return (
     <div className="container mx-auto">
       <div>
@@ -118,7 +108,7 @@ const Update = () => {
         </label>
         {restaurant.imageUrl && (
           <div className="flex items-center gap-2">
-            <img className="h-32" src={restaurant.imageUrl} alt="Restaurant" />
+            <img className="h-32" src={restaurant.imageUrl} />
           </div>
         )}
         <div className="space-x-2">
