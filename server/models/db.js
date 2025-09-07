@@ -9,10 +9,10 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   omitNull: true,
   dialectOptions: {
     ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  }
+      required: true,
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 const testConnection = async () => {
